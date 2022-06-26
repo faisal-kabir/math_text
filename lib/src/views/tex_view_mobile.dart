@@ -40,6 +40,7 @@ class TeXViewState extends State<TeXView> with AutomaticKeepAliveClientMixin {
                   name: 'TeXViewRenderedCallback',
                   onMessageReceived: (jm) async {
                     double height = double.parse(jm.message);
+                    print('TeXViewRenderedCallback Height = ${height}');
                     if (_height != height) {
                       setState(() {
                         _height = height;
