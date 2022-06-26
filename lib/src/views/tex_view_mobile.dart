@@ -6,7 +6,7 @@ import 'package:webview_flutter_plus/webview_flutter_plus.dart';
 class TeXViewState extends State<TeXView> with AutomaticKeepAliveClientMixin {
   WebViewPlusController? _controller;
 
-  double _height = minHeight;
+  ValueNotifier<double> _height = ValueNotifier<double>(minHeight);
   String? _lastData;
   bool _pageLoaded = false;
 
@@ -20,42 +20,45 @@ class TeXViewState extends State<TeXView> with AutomaticKeepAliveClientMixin {
     _initTeXView();
     return Stack(
       children: <Widget>[
-        SizedBox(
-          height: _height,
-          child: WebViewPlus(
-            onPageFinished: (message) {
-              _pageLoaded = true;
-              _initTeXView();
-            },
-            initialUrl:
-                "packages/flutter_tex/js/${widget.renderingEngine?.name ?? 'katex'}/index.html",
-            onWebViewCreated: (controller) {
-              _controller = controller;
-            },
-            initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
-            backgroundColor: Colors.transparent,
-            allowsInlineMediaPlayback: true,
-            javascriptChannels: {
-              JavascriptChannel(
-                  name: 'TeXViewRenderedCallback',
-                  onMessageReceived: (jm) async {
-                    double height = double.parse(jm.message);
-                    print('TeXViewRenderedCallback Height = ${jm.message}');
-                    if (_height != height) {
-                      setState(() {
-                        _height = height;
-                      });
-                    }
-                    widget.onRenderFinished?.call(height);
-                  }),
-              JavascriptChannel(
-                  name: 'OnTapCallback',
-                  onMessageReceived: (jm) {
-                    widget.child.onTapCallback(jm.message);
-                  })
-            },
-            javascriptMode: JavascriptMode.unrestricted,
-          ),
+        ValueListenableBuilder<double>(
+            valueListenable: _height,
+            builder: (context, value, _) {
+              return SizedBox(
+                height: value,
+                child: WebViewPlus(
+                  onPageFinished: (message) {
+                    _pageLoaded = true;
+                    _initTeXView();
+                  },
+                  initialUrl:
+                  "packages/flutter_tex/js/${widget.renderingEngine?.name ?? 'katex'}/index.html",
+                  onWebViewCreated: (controller) {
+                    _controller = controller;
+                  },
+                  initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
+                  backgroundColor: Colors.transparent,
+                  allowsInlineMediaPlayback: true,
+                  javascriptChannels: {
+                    JavascriptChannel(
+                        name: 'TeXViewRenderedCallback',
+                        onMessageReceived: (jm) async {
+                          double height = double.parse(jm.message);
+                          print('TeXViewRenderedCallback Height = ${jm.message}');
+                          if (_height.value != height) {
+                            _height.value=height;
+                          }
+                          widget.onRenderFinished?.call(height);
+                        }),
+                    JavascriptChannel(
+                        name: 'OnTapCallback',
+                        onMessageReceived: (jm) {
+                          widget.child.onTapCallback(jm.message);
+                        })
+                  },
+                  javascriptMode: JavascriptMode.unrestricted,
+                ),
+              );
+            }
         ),
         Visibility(
           visible: widget.loadingWidgetBuilder?.call(context) != null
@@ -71,7 +74,7 @@ class TeXViewState extends State<TeXView> with AutomaticKeepAliveClientMixin {
 
   void _initTeXView() {
     if (_pageLoaded && _controller != null && getRawData(widget) != _lastData) {
-      if (widget.loadingWidgetBuilder != null) _height = minHeight;
+      if (widget.loadingWidgetBuilder != null) _height.value = minHeight;
       _controller!.webViewController
           .runJavascript("initView(${getRawData(widget)})");
       _lastData = getRawData(widget);
