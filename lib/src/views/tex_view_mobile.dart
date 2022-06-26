@@ -20,8 +20,8 @@ class TeXViewState extends State<TeXView> with AutomaticKeepAliveClientMixin {
     _initTeXView();
     return Stack(
       children: <Widget>[
-        SizedBox(
-          height: _height,
+        SizedBox.shrink(
+          //height: _height,
           child: WebViewPlus(
             onPageFinished: (message) {
               _pageLoaded = true;
