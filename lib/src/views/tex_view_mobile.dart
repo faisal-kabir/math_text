@@ -20,8 +20,8 @@ class TeXViewState extends State<TeXView> with AutomaticKeepAliveClientMixin {
     _initTeXView();
     return Stack(
       children: <Widget>[
-        SizedBox.shrink(
-          //height: _height,
+        SizedBox(
+          height: _height,
           child: WebViewPlus(
             onPageFinished: (message) {
               _pageLoaded = true;
@@ -40,7 +40,7 @@ class TeXViewState extends State<TeXView> with AutomaticKeepAliveClientMixin {
                   name: 'TeXViewRenderedCallback',
                   onMessageReceived: (jm) async {
                     double height = double.parse(jm.message);
-                    print('TeXViewRenderedCallback Height = ${height}');
+                    print('TeXViewRenderedCallback Height = ${jm.message}');
                     if (_height != height) {
                       setState(() {
                         _height = height;
