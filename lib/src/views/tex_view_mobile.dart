@@ -24,7 +24,7 @@ class TeXViewState extends State<TeXView> with AutomaticKeepAliveClientMixin {
             valueListenable: _height,
             builder: (context, value, _) {
               return SizedBox(
-                height: value,
+                height: _height.value,
                 child: WebViewPlus(
                   onPageFinished: (message) {
                     _pageLoaded = true;
