@@ -1,12 +1,16 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_tex/flutter_tex.dart';
 import 'package:flutter_tex/src/utils/core_utils.dart';
-import 'package:webview_flutter_plus/webview_flutter_plus.dart';
+import 'package:flutter_tex/src/views/web_view.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class TeXViewState extends State<TeXView> with AutomaticKeepAliveClientMixin {
   WebViewPlusController? _controller;
+  final ValueNotifier<double> _height = ValueNotifier<double>(minHeight);
 
-  ValueNotifier<double> _height = ValueNotifier<double>(minHeight);
   String? _lastData;
   bool _pageLoaded = false;
 
@@ -18,20 +22,19 @@ class TeXViewState extends State<TeXView> with AutomaticKeepAliveClientMixin {
     super.build(context);
     updateKeepAlive();
     _initTeXView();
-    return Stack(
-      children: <Widget>[
-        ValueListenableBuilder<double>(
-            valueListenable: _height,
-            builder: (context, value, _) {
-              return SizedBox(
+    return ValueListenableBuilder<double>(
+        valueListenable: _height,
+        builder: (context, value, _) {
+          return Stack(
+            children: [
+              SizedBox(
                 height: _height.value,
                 child: WebViewPlus(
                   onPageFinished: (message) {
                     _pageLoaded = true;
                     _initTeXView();
                   },
-                  initialUrl:
-                  "packages/flutter_tex/js/${widget.renderingEngine?.name ?? 'katex'}/index.html",
+                  initialUrl: "packages/flutter_tex/js/${widget.renderingEngine?.name ?? 'katex'}/index.html",
                   onWebViewCreated: (controller) {
                     _controller = controller;
                   },
@@ -56,18 +59,18 @@ class TeXViewState extends State<TeXView> with AutomaticKeepAliveClientMixin {
                   },
                   javascriptMode: JavascriptMode.unrestricted,
                 ),
-              );
-            }
-        ),
-        Visibility(
-          visible: widget.loadingWidgetBuilder?.call(context) != null
-              ? _height == minHeight
-              ? true
-              : false
-              : false,
-          child: widget.loadingWidgetBuilder?.call(context) ?? const SizedBox.shrink()
-        )
-      ],
+              ),
+              Visibility(
+                  visible: widget.loadingWidgetBuilder?.call(context) != null
+                      ? _height.value == minHeight
+                      ? true
+                      : false
+                      : false,
+                  child: widget.loadingWidgetBuilder?.call(context) ?? const SizedBox.shrink()
+              )
+            ],
+          );
+        }
     );
   }
 
