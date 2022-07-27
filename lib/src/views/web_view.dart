@@ -309,7 +309,6 @@ class _WebViewPlusState extends State<WebViewPlus> {
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) WebView.platform = AndroidWebView();
     _assertJavascriptChannelNamesAreUnique();
     _platformCallbacksHandler = _PlatformCallbacksHandler(widget);
     _javascriptChannelRegistry =
