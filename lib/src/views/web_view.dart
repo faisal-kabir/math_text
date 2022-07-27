@@ -93,7 +93,7 @@ class WebViewPlus extends StatefulWidget {
     if (_platform == null) {
       switch (defaultTargetPlatform) {
         case TargetPlatform.android:
-          _platform = SurfaceAndroidWebView();
+          _platform = AndroidWebView();
           break;
         case TargetPlatform.iOS:
           _platform = CupertinoWebView();
