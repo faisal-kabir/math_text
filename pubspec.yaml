@@ -7,13 +7,13 @@ version: 4.0.3+4
 homepage: https://github.com/shah-xad/flutter_tex
 
 environment:
-  sdk: ">=2.16.0 <3.0.0"
+  sdk: ">=2.18.0 <3.0.0"
   flutter: ">=1.17.0"
 
 
 dependencies:
   webview_flutter: ^3.0.4
-  markdown: ^5.0.0
+  markdown: ^6.0.0
   mime: ^1.0.2
 
   flutter:
