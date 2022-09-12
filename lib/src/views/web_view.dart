@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -884,7 +885,7 @@ class _Server {
           try {
             body = (await rootBundle.load(path)).buffer.asUint8List();
           } catch (e) {
-            print('Error: $e');
+            log('Error: $e');
             httpRequest.response.close();
             return;
           }
@@ -904,7 +905,7 @@ class _Server {
         });
         completer.complete(server.port);
       });
-    }, (e, stackTrace) => print('Error: $e $stackTrace'));
+    }, (e, stackTrace) => log('Error: $e $stackTrace'));
     return completer.future;
   }
 }
