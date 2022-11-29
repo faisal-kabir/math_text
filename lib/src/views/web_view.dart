@@ -369,8 +369,9 @@ String? _getInitialUrl(String? url, int? port) {
     } else {
       return 'http://localhost:$port/$url';
     }
-  } else
+  } else {
     return null;
+  }
 }
 
 WebSettings _webSettingsFromWidget(WebViewPlus widget) {
@@ -823,7 +824,7 @@ class WebViewPlusController {
         Encoding? encoding,
         Map<String, String>? parameters,
         bool base64 = false}) {
-    return this.loadUrl(
+    return loadUrl(
         Uri.dataFromString(code,
             base64: base64,
             parameters: parameters,
@@ -843,7 +844,7 @@ class WebViewPlusController {
   }
 
   Future<void> _loadAsset(String uri, {Map<String, String>? headers}) async {
-    return this.loadUrl('http://localhost:$_port/$uri', headers: headers);
+    return loadUrl('http://localhost:$_port/$uri', headers: headers);
   }
 }
 
